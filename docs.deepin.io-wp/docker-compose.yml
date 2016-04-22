@@ -1,0 +1,8 @@
+docs.deepin.io:
+    container_name: docs.deepin.io
+    image: hub.deepin.io/docs.deepin.io
+    ports:
+        - "10080:80"
+    volumes:
+        - "/data/docker/docs.deepin.io-wp/www:/var/www"
+        - "/data/docker/docs.deepin.io-wp/nginx:/etc/nginx"
