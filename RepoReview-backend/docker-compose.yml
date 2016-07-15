@@ -1,0 +1,13 @@
+RepoReview-backend:
+    container_name: RepoReview-backend
+    image: repo-review-backend
+    restart: always
+    log_driver: journald
+    stdin_open: true
+    tty: true
+    ports:
+        - "3040:3040"
+    volumes:
+        - /data/docker/RepoReview-backend/workspace:/data
+        - /data/docker/RepoReview-backend/ssh:/home/deepin/.ssh
+    command: ["bash", "/usr/bin/run.sh"]
