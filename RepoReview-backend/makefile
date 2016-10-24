@@ -1,2 +1,2 @@
 build:
-	docker build --force-rm -t repo-review-backend .
+	docker build --force-rm -t hub.deepin.io/deepin/repo-review-backend .

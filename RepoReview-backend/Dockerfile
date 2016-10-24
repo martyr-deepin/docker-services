@@ -8,23 +8,27 @@ RUN apt-get update \
     && yes | apt-get install python3 \
     && yes | apt-get install python3-pip \
     && yes | apt-get install openssh-server \ 
-    && yes | apt-get install sudo
+    && yes | apt-get install sudo \
+    && yes | apt-get install ostree \
+    && yes | apt-get install locales
+
+ADD https://ci.deepin.io/view/dstore/job/lastore-daemon/lastSuccessfulBuild/artifact/lastore-tools /usr/bin/lastore-tools
 
 RUN mkdir -p /var/run/sshd \
     && useradd -m -G sudo deepin \
     && echo 'deepin:0' | chpasswd \
-    && echo "deepin	ALL=(ALL:ALL) NOPASSWD: ALL" >> /etc/sudoers
+    && echo "deepin	ALL=(ALL:ALL) NOPASSWD: ALL" >> /etc/sudoers \
+    && chmod a+x /usr/bin/lastore-tools \
+    && mkdir -pv /lastore \
+    && chmod 777 /lastore \
+    && sed -i "s/# zh_CN.UTF-8 UTF-8/zh_CN.UTF-8 UTF-8/g" /etc/locale.gen \
+    && locale-gen
 
-COPY run.sh /usr/bin/run.sh
-
-RUN yes | apt-get install locales
-RUN sed -i "s/# zh_CN.UTF-8 UTF-8/zh_CN.UTF-8 UTF-8/g" /etc/locale.gen
-RUN locale-gen
 ENV LC_ALL=zh_CN.UTF-8
 
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
+COPY run.sh /usr/bin/run.sh
 USER deepin
 WORKDIR /data 
 CMD ["bash", "/usr/bin/run.sh"]
-
