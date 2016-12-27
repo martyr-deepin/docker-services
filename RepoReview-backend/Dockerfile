@@ -1,16 +1,11 @@
-FROM debian:jessie
+FROM hub.deepin.io/debian:sid
 
 RUN echo "deb [by-hash=force] http://pools.corp.deepin.com/deepin unstable main contrib non-free" > /etc/apt/sources.list
 
 RUN apt-get update \
-    && yes | apt-get install git \
-    && yes | apt-get install vim \
-    && yes | apt-get install python3 \
-    && yes | apt-get install python3-pip \
-    && yes | apt-get install openssh-server \ 
-    && yes | apt-get install sudo \
-    && yes | apt-get install ostree \
-    && yes | apt-get install locales
+    && yes | apt-get install --no-install-recommends --no-install-suggests \
+       git vim python3 python3-pip openssh-server sudo ostree locales \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 ADD https://ci.deepin.io/view/dstore/job/lastore-daemon/lastSuccessfulBuild/artifact/lastore-tools /usr/bin/lastore-tools
 
@@ -26,9 +21,7 @@ RUN mkdir -p /var/run/sshd \
 
 ENV LC_ALL=zh_CN.UTF-8
 
-RUN apt-get clean && rm -rf /var/lib/apt/lists/*
-
-COPY run.sh /usr/bin/run.sh
+COPY entrypoint.sh /entrypoint.sh
 USER deepin
 WORKDIR /data 
-CMD ["bash", "/usr/bin/run.sh"]
+CMD ["bash", "/entrypoint.sh"]
